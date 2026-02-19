@@ -30,7 +30,7 @@ Over the years, three main families of algorithms have evolved. You will likely 
 - **Algorithm:** `Vocal = (Left + Right) / 2` and `Music = Left - Right`.
 - **Why we don't use it:** It fails on mono tracks, removes the drums (which are also centered), and leaves a "ghostly" hollow sound.
 
-### **B. NMF (Non-negative Matrix Factorization) (Unsupervised Learning)**
+### **B. Matrix Factorization (NMF - Non-negative Matrix Factorization)**
 
 - **Method:** Statistical Algebra.
 - **Concept:** It assumes that a song is made up of a few repeating "sound dictionaries" (like a drum hit or a piano chord). It tries to factor the spectrogram matrix $V$ into two smaller matrices $W$ (patterns) and $H$ (activations).
@@ -43,9 +43,29 @@ This is what Spleeter, Demucs, and MDX-Net use. These are **Supervised Learning*
 - **Training:** The model is shown millions of pairs: (Song Mix, Isolated Vocal Stem).
 - **Learning:** It learns the *texture* of a voice. It learns that "wavy horizontal lines around 300Hz-3kHz" are usually human, while "rigid vertical lines" are drums.
 
+### D. Traditional Bandpass Filtering
+
+A common misconception in audio processing is that vocal isolation can be achieved using a simple EQ, specifically a bandpass filter restricted to the 300Hz–3kHz range. While this range contains the bulk of vocal energy, relying solely on standard filtering fails for two primary reasons: the loss of vocal intelligibility and the issue of frequency overlap.
+
+### 1. The "Telephone Effect" and Loss of Harmonics
+
+The human voice is a complex broadband signal, not a single sine wave.
+
+- **Fundamentals vs. Harmonics:** While the fundamental frequencies of human speech generally fall between 85Hz and 255Hz, the *harmonics* (the overtones that give a voice its unique timbre, clarity, and emotion) extend far beyond 3kHz, often reaching up to 15kHz.
+- **Consonants and Sibilance:** Crucial phonetic identifiers—specifically consonants and sibilant sounds like "S," "T," "F," "K," and "P"—are essentially high-frequency noise bursts that reside primarily in the 4kHz to 10kHz range.
+
+Applying a strict 3kHz high-cut (low-pass) filter strips away these harmonics and consonants. The resulting audio suffers from the "telephone effect": it becomes muffled, distant, and largely unintelligible, lacking the crispness required for high-fidelity extraction.
+
+### 2. The Frequency Overlap Problem (The "Muddy Middle")
+
+A bandpass filter discriminates by frequency, not by the source of the sound. The 300Hz to 3kHz spectrum is the most congested area in a standard acoustic mix.
+
+- **Instrument Crowding:** This exact frequency band houses the fundamental notes and primary harmonics of acoustic guitars, electric guitars, pianos, snare drums, violins, and synthesizers.
+- **The Result:** Passing a full song through a 300Hz–3kHz bandpass filter will not yield an isolated vocal track. Instead, it produces a narrow, muddy mixture of the vocal heavily entangled with keyboards, guitars, and snare hits.
+
 ---
 
-### ** The Deep Learning Architectures**
+### **The Deep Learning Architectures**
 
 If you are building a custom engine or choosing a model, you need to know these three architectures.
 

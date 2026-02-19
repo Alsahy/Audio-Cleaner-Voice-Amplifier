@@ -1,0 +1,9 @@
+# Audio Quality Evaluation Metrics
+
+Defining whether an isolated vocal track is "clean" requires a combination of mathematical precision and human perceptual models. Because an algorithm can mathematically isolate a track while simultaneously introducing severe metallic or robotic artifacts, multiple standard metrics must be utilized to validate the engine's output.
+
+* **SI-SDR (Scale-Invariant Signal-to-Distortion Ratio):** The foundational mathematical benchmark for blind source separation. It measures the power ratio between the intended isolated source and the introduced distortion or instrument bleed. It is measured in decibels (dB), where scores > 15 dB indicate excellent mathematical isolation.
+* **PESQ (Perceptual Evaluation of Speech Quality):** An ITU standard metric designed to simulate human ear perception. It evaluates the *naturalness* of the audio to catch phase damage and robotic artifacts that SDR might miss. It is scored on a scale from -0.5 to 4.5, with scores > 3.5 considered highly natural.
+* **STOI (Short-Time Objective Intelligibility):** A metric that specifically measures how understandable the spoken or sung words are, regardless of background noise. It calculates temporal envelope similarity and is scored from 0.0 to 1.0, with scores > 0.85 indicating highly intelligible speech.
+* **FAD (Fréchet Audio Distance):** An embedding-based metric essential for evaluating the Bandwidth Extension (generative AI) stage. Traditional metrics penalize generated high frequencies, so FAD instead compares the statistical distribution of the output against a massive dataset of pristine studio audio. A score approaching 0.0 is the ideal target.
+* **MOS (Mean Opinion Score):** The gold standard subjective evaluation, rating clarity and naturalness on a scale of 1 (Bad) to 5 (Excellent). In automated pipelines, pre-trained AI models (such as DNSMOS or NISQA) are used to estimate this human rating programmatically.
